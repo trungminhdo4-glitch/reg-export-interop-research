@@ -1,0 +1,345 @@
+{
+  "environment": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "powershell": "pwsh 7.6.6",
+    "python": "3.12.6",
+    "windows_build": "10.0.26200"
+  },
+  "generators": [
+    "regedit.exe /e",
+    "reg.exe export"
+  ],
+  "oracle": "reg.exe import into scratch tree + re-export",
+  "probes": [
+    {
+      "byte_identical": true,
+      "changed_input": "one REG_SZ",
+      "emitter_semantic_delta": [],
+      "probe": "K00-baseline",
+      "regedit_sha256": "9f645816db3894b60ea7ff8c81600976af19dab3853d572c6f4d45ce428d91f8",
+      "regexe_sha256": "9f645816db3894b60ea7ff8c81600976af19dab3853d572c6f4d45ce428d91f8",
+      "roundtrip_byte_identical": true,
+      "roundtrip_clean": true,
+      "sections": [
+        {
+          "key": "K00-baseline",
+          "values": [
+            {
+              "kind": "REG_SZ",
+              "name": "S"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "byte_identical": true,
+      "changed_input": "default value",
+      "emitter_semantic_delta": [],
+      "probe": "K01-default",
+      "regedit_sha256": "a9ba75d229a2bb4165f56ec29bcad1e6a82d307e579a5c7d3437aef08487d3d4",
+      "regexe_sha256": "a9ba75d229a2bb4165f56ec29bcad1e6a82d307e579a5c7d3437aef08487d3d4",
+      "roundtrip_byte_identical": true,
+      "roundtrip_clean": true,
+      "sections": [
+        {
+          "key": "K01-default",
+          "values": [
+            {
+              "kind": "REG_SZ",
+              "name": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "byte_identical": true,
+      "changed_input": "REG_DWORD 42 and 0",
+      "emitter_semantic_delta": [],
+      "probe": "K02-dword",
+      "regedit_sha256": "30e622023fb89486261f4b67d50b2d893979117df1581ccd67576836ac4b856d",
+      "regexe_sha256": "30e622023fb89486261f4b67d50b2d893979117df1581ccd67576836ac4b856d",
+      "roundtrip_byte_identical": true,
+      "roundtrip_clean": true,
+      "sections": [
+        {
+          "key": "K02-dword",
+          "values": [
+            {
+              "kind": "REG_DWORD",
+              "name": "N"
+            },
+            {
+              "kind": "REG_DWORD",
+              "name": "Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "byte_identical": true,
+      "changed_input": "REG_QWORD 0x1122334455667788",
+      "emitter_semantic_delta": [],
+      "probe": "K03-qword",
+      "regedit_sha256": "7824ce78d09059ba8596fecd6a666d7b1fd25fc6e9be1ac7db5173bb51cc0e5b",
+      "regexe_sha256": "7824ce78d09059ba8596fecd6a666d7b1fd25fc6e9be1ac7db5173bb51cc0e5b",
+      "roundtrip_byte_identical": true,
+      "roundtrip_clean": true,
+      "sections": [
+        {
+          "key": "K03-qword",
+          "values": [
+            {
+              "kind": "REG_QWORD",
+              "name": "Q"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "byte_identical": true,
+      "changed_input": "REG_BINARY 8 bytes single line",
+      "emitter_semantic_delta": [],
+      "probe": "K04-binary8",
+      "regedit_sha256": "5eaa9ce6416180d37c1861d591757163233657d5019c31dbb2d61acdc957a431",
+      "regexe_sha256": "5eaa9ce6416180d37c1861d591757163233657d5019c31dbb2d61acdc957a431",
+      "roundtrip_byte_identical": true,
+      "roundtrip_clean": true,
+      "sections": [
+        {
+          "key": "K04-binary8",
+          "values": [
+            {
+              "kind": "REG_BINARY",
+              "name": "B"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "byte_identical": true,
+      "changed_input": "REG_BINARY 30 bytes wrap probe",
+      "emitter_semantic_delta": [],
+      "probe": "K05-binary30",
+      "regedit_sha256": "48f7305a3a6afee44c11eb3cb098b492705cca71377df12907dc40846e1ae82c",
+      "regexe_sha256": "48f7305a3a6afee44c11eb3cb098b492705cca71377df12907dc40846e1ae82c",
+      "roundtrip_byte_identical": true,
+      "roundtrip_clean": true,
+      "sections": [
+        {
+          "key": "K05-binary30",
+          "values": [
+            {
+              "kind": "REG_BINARY",
+              "name": "W"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "byte_identical": true,
+      "changed_input": "REG_MULTI_SZ incl. empty element",
+      "emitter_semantic_delta": [],
+      "probe": "K06-multisz",
+      "regedit_sha256": "7256c4330d3367b973a52d0d2f31bc4411338fdd90b06287b13213f3f556322f",
+      "regexe_sha256": "7256c4330d3367b973a52d0d2f31bc4411338fdd90b06287b13213f3f556322f",
+      "roundtrip_byte_identical": true,
+      "roundtrip_clean": true,
+      "sections": [
+        {
+          "key": "K06-multisz",
+          "values": [
+            {
+              "kind": "REG_MULTI_SZ",
+              "name": "M"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "byte_identical": true,
+      "changed_input": "REG_EXPAND_SZ unexpanded",
+      "emitter_semantic_delta": [],
+      "probe": "K07-expand",
+      "regedit_sha256": "8170ce106852c00dd46f8c4d02d750adc2700f70e073499a89ce7bf281c39e92",
+      "regexe_sha256": "8170ce106852c00dd46f8c4d02d750adc2700f70e073499a89ce7bf281c39e92",
+      "roundtrip_byte_identical": true,
+      "roundtrip_clean": true,
+      "sections": [
+        {
+          "key": "K07-expand",
+          "values": [
+            {
+              "kind": "REG_EXPAND_SZ",
+              "name": "E"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "byte_identical": true,
+      "changed_input": "key without values",
+      "emitter_semantic_delta": [],
+      "probe": "K08-empty",
+      "regedit_sha256": "b65baff3960d50ede30a349caf5f06ead0d5d7ff29f3916132d3820b3073e822",
+      "regexe_sha256": "b65baff3960d50ede30a349caf5f06ead0d5d7ff29f3916132d3820b3073e822",
+      "roundtrip_byte_identical": true,
+      "roundtrip_clean": true,
+      "sections": [
+        {
+          "key": "K08-empty",
+          "values": []
+        }
+      ]
+    },
+    {
+      "byte_identical": true,
+      "changed_input": "value name with space",
+      "emitter_semantic_delta": [],
+      "probe": "K09-spaced-name",
+      "regedit_sha256": "6c0ca11ce836032e4a59abab99f19702de90847d0453371b81263df87e463e0f",
+      "regexe_sha256": "6c0ca11ce836032e4a59abab99f19702de90847d0453371b81263df87e463e0f",
+      "roundtrip_byte_identical": true,
+      "roundtrip_clean": true,
+      "sections": [
+        {
+          "key": "K09-spaced-name",
+          "values": [
+            {
+              "kind": "REG_SZ",
+              "name": "a b"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "byte_identical": true,
+      "changed_input": "subkeys created c,a,b",
+      "emitter_semantic_delta": [],
+      "probe": "K10-subkey-order",
+      "regedit_sha256": "1247048bca085f2ba30488a6aa79bd63ffc5d8d39f44ac193b4f4f2fe58fde5f",
+      "regexe_sha256": "1247048bca085f2ba30488a6aa79bd63ffc5d8d39f44ac193b4f4f2fe58fde5f",
+      "roundtrip_byte_identical": true,
+      "roundtrip_clean": true,
+      "sections": [
+        {
+          "key": "K10-subkey-order",
+          "values": [
+            {
+              "kind": "REG_SZ",
+              "name": "v"
+            }
+          ]
+        },
+        {
+          "key": "subA",
+          "values": [
+            {
+              "kind": "REG_SZ",
+              "name": "v"
+            }
+          ]
+        },
+        {
+          "key": "subB",
+          "values": [
+            {
+              "kind": "REG_SZ",
+              "name": "v"
+            }
+          ]
+        },
+        {
+          "key": "subC",
+          "values": [
+            {
+              "kind": "REG_SZ",
+              "name": "v"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "byte_identical": true,
+      "changed_input": "values created zeta,alpha,mid",
+      "emitter_semantic_delta": [],
+      "probe": "K11-value-order",
+      "regedit_sha256": "cf52ba4353faa23bcc3ea365fae9cc73a817b99778e972ef018a41618dfc38ad",
+      "regexe_sha256": "cf52ba4353faa23bcc3ea365fae9cc73a817b99778e972ef018a41618dfc38ad",
+      "roundtrip_byte_identical": true,
+      "roundtrip_clean": true,
+      "sections": [
+        {
+          "key": "K11-value-order",
+          "values": [
+            {
+              "kind": "REG_SZ",
+              "name": "zeta"
+            },
+            {
+              "kind": "REG_SZ",
+              "name": "alpha"
+            },
+            {
+              "kind": "REG_SZ",
+              "name": "mid"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "byte_identical": true,
+      "changed_input": "REG_BINARY 60 bytes multi-wrap probe",
+      "emitter_semantic_delta": [],
+      "probe": "K12-binary60",
+      "regedit_sha256": "4170f7bc26f7b38542b6182fafb411867effcf4c24249d15342d531b58825047",
+      "regexe_sha256": "4170f7bc26f7b38542b6182fafb411867effcf4c24249d15342d531b58825047",
+      "roundtrip_byte_identical": true,
+      "roundtrip_clean": true,
+      "sections": [
+        {
+          "key": "K12-binary60",
+          "values": [
+            {
+              "kind": "REG_BINARY",
+              "name": "W"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "byte_identical": true,
+      "changed_input": "10-char value name shifts first wrap",
+      "emitter_semantic_delta": [],
+      "probe": "K13-longname",
+      "regedit_sha256": "549ef75c63ea6099c0ca31d206beaefd47da7e3f8d970f9df452bd8f5ed77d3e",
+      "regexe_sha256": "549ef75c63ea6099c0ca31d206beaefd47da7e3f8d970f9df452bd8f5ed77d3e",
+      "roundtrip_byte_identical": true,
+      "roundtrip_clean": true,
+      "sections": [
+        {
+          "key": "K13-longname",
+          "values": [
+            {
+              "kind": "REG_BINARY",
+              "name": "0123456789"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "spec": "Registry Editor Version 5.00 exports",
+  "study": "reg-export-matrix"
+}

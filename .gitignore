@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+# local Windows probe outputs (never commit; regenerate via reg_matrix.py)
+probes/
+*.reg
+*.log
+sandbox/

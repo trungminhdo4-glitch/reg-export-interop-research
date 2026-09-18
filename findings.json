@@ -1,0 +1,91 @@
+{
+  "artifact": {
+    "components": [
+      {
+        "exists_for": "Byte-exact structural parse of v5 .reg into deterministic JSON; strict malformed handling (exit 3).",
+        "file": "scripts/reg_inspect.py",
+        "lines": 229
+      },
+      {
+        "exists_for": "Mechanical before/after comparison of two parse documents, order-sensitive.",
+        "file": "scripts/reg_diff.py",
+        "lines": 129
+      },
+      {
+        "exists_for": "Confined exact-type corpus seeder (own HKCU scratch keys only).",
+        "file": "scripts/reg_seed.ps1",
+        "lines": 66
+      },
+      {
+        "exists_for": "Reproducible 14-probe runner: seed, dual-emitter export, parse, byte-compare, import round-trip, sanitized evidence.",
+        "file": "scripts/reg_matrix.py",
+        "lines": 317
+      }
+    ],
+    "name": "reg-export-matrix",
+    "tests": "tests/test_reg_study.py (20 tests, stdlib+pytest only)"
+  },
+  "claims": [
+    {
+      "confidence": "high",
+      "id": "R1",
+      "scope": "regedit.exe /e + reg.exe export, Windows 10 Home build 26200",
+      "status": "OBSERVED",
+      "text": "Both emitters produce byte-identical output on all 14 probes."
+    },
+    {
+      "confidence": "high",
+      "id": "R2",
+      "scope": "same",
+      "status": "OBSERVED",
+      "text": "Hex payload lines wrap at 77 content columns (backslash continuation, 2-space indent, trailing comma kept)."
+    },
+    {
+      "confidence": "high",
+      "id": "R3",
+      "scope": "same",
+      "status": "OBSERVED",
+      "text": "Subkey sections export alphabetically; values export in registry enumeration (creation) order."
+    },
+    {
+      "confidence": "high",
+      "id": "R4",
+      "scope": "same",
+      "status": "OBSERVED",
+      "text": "Delete-import-reexport round-trips are byte-identical on all 14 probes, including MULTI_SZ empty elements."
+    },
+    {
+      "confidence": "high",
+      "id": "R5",
+      "scope": "same",
+      "status": "OBSERVED",
+      "text": "dword is 8 lowercase zero-padded hex; QWORD is hex(b) little-endian; EXPAND_SZ stored unexpanded with NUL terminator."
+    },
+    {
+      "confidence": "none",
+      "id": "R6",
+      "scope": "open",
+      "status": "UNKNOWN",
+      "text": "Behavior for >77-column prefixes, mixed-case subkey sort, and exotic hex discriminants."
+    }
+  ],
+  "determinism": {
+    "class": "RECONSTRUCTION_DETERMINISTIC",
+    "note": "delete + import own export + re-export is byte-identical (14/14); no wall-clock or machine bytes in v5 text exports."
+  },
+  "environment": {
+    "generators": [
+      "regedit.exe /e",
+      "reg.exe export"
+    ],
+    "os": "Windows 10 Home build 26200",
+    "python": "3.12.6",
+    "spec": "Registry Editor Version 5.00"
+  },
+  "privacy": {
+    "scan": "synthetic key/value names only; no user paths, SIDs, or machine data in matrix.json",
+    "scratch_keys": "HKCU\\SOFTWARE\\REStudyTmp* (removed after runs)"
+  },
+  "probes": 14,
+  "study": "reg-export-matrix"
+}
