@@ -18,6 +18,7 @@ import os
 import platform
 import subprocess
 import sys
+import time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 INSPECT = os.path.join(HERE, "reg_inspect.py")
@@ -25,6 +26,12 @@ DIFF = os.path.join(HERE, "reg_diff.py")
 SEED = os.path.join(HERE, "reg_seed.ps1")
 
 ROOT = "HKCU\\SOFTWARE\\REStudyTmp"
+
+# Environment operability (not under study): regedit.exe carries a
+# requireAdministrator manifest, so every launch raises a UAC consent prompt
+# and rapid successive launches get auto-denied ("durch den Benutzer
+# abgebrochen"). Space launches out. Captured bytes are unaffected.
+REGEDIT_SETTLE_SECONDS = 20
 
 BIN30 = " ".join("%02x" % b for b in bytes(range(1, 31)))
 
@@ -117,6 +124,108 @@ PROBES = [
             }
         ],
     ),
+    # R6 axis A: long-name prefix vs 77-column wrap. Same 30-byte payload as
+    # K05/K13; prefix P = len(name)+7 ('"' + name + '"=hex:'). H-width predicts
+    # first-line bytes = floor((77-P)/3): K14 P=27 -> 16; K15 P=76 -> 0;
+    # K16 P=77 -> 0; K17 P=78 -> rule gives -1 (impossible: the boundary probe);
+    # K18 P=107 -> long-prefix regime. Competing: H-width (break to 25/line
+    # continuation) vs H-overflow (payload on the prefix line anyway).
+    (
+        "K14-wrapA0-name20",
+        "20-char name interpolates floor model (P=27 -> 16 first-line bytes)",
+        [
+            {
+                "name": "N" * 20,
+                "type": "REG_BINARY",
+                "data": " ".join("%02x" % b for b in bytes(range(1, 31))),
+            }
+        ],
+    ),
+    (
+        "K15-wrapA1-p69",
+        "69-char name just below 77-col prefix boundary (P=76 -> 0 bytes)",
+        [
+            {
+                "name": "N" * 69,
+                "type": "REG_BINARY",
+                "data": " ".join("%02x" % b for b in bytes(range(1, 31))),
+            }
+        ],
+    ),
+    (
+        "K16-wrapA2-p70",
+        "70-char name at exact 77-col prefix boundary (P=77 -> 0 bytes)",
+        [
+            {
+                "name": "N" * 70,
+                "type": "REG_BINARY",
+                "data": " ".join("%02x" % b for b in bytes(range(1, 31))),
+            }
+        ],
+    ),
+    (
+        "K17-wrapA3-p71",
+        "71-char name just above boundary (P=78: floor model undefined)",
+        [
+            {
+                "name": "N" * 71,
+                "type": "REG_BINARY",
+                "data": " ".join("%02x" % b for b in bytes(range(1, 31))),
+            }
+        ],
+    ),
+    (
+        "K18-wrapA4-p100",
+        "100-char name long-prefix regime (P=107)",
+        [
+            {
+                "name": "N" * 100,
+                "type": "REG_BINARY",
+                "data": " ".join("%02x" % b for b in bytes(range(1, 31))),
+            }
+        ],
+    ),
+    # R6 axis B: mixed-case ordering (ASCII only). B1: subkeys created
+    # [b1,A1,B2,a2] (distinct folds). Ordinal predicts A1,B2,a2,b1;
+    # case-folded-stable predicts A1,a2,b1,B2. B2: values created
+    # [zeta,Alpha,MID,beta]; K11-model predicts creation order preserved
+    # (any sorted order = asymmetry-rule divergence). Tie pairs (Ab vs aB)
+    # are UNPRODUCIBLE: the namespace folds case at identity (proven in
+    # scratch: one key survives) — documented, not probed.
+    (
+        "K19-orderB1-fold",
+        "subkeys b1,A1,B2,a2 created scrambled: ordinal vs folded order",
+        [
+            {"name": "v", "type": "REG_SZ", "data": "top"},
+            {"name": "x", "type": "SUBKEY", "data": "b1", "with_value": True},
+            {"name": "x", "type": "SUBKEY", "data": "A1", "with_value": True},
+            {"name": "x", "type": "SUBKEY", "data": "B2", "with_value": True},
+            {"name": "x", "type": "SUBKEY", "data": "a2", "with_value": True},
+        ],
+    ),
+    (
+        "K20-orderB2-values",
+        "values zeta,Alpha,MID,beta: creation order vs sorted (K11 scope)",
+        [
+            {"name": "zeta", "type": "REG_SZ", "data": "1"},
+            {"name": "Alpha", "type": "REG_SZ", "data": "2"},
+            {"name": "MID", "type": "REG_SZ", "data": "3"},
+            {"name": "beta", "type": "REG_SZ", "data": "4"},
+        ],
+    ),
+    # R6 axis C: REG_NONE (hex(0)) via .NET exact-type seeding (scratch-proven).
+    # C1: 3-byte payload (discriminant preserved? agreement? round-trip?).
+    # C2: empty payload (bare 'hex(0):' shape — agreement + round-trip?).
+    (
+        "K21-noneC1",
+        "REG_NONE 3 bytes: hex(0) discriminant, agreement, round-trip",
+        [{"name": "N", "type": "REG_NONE", "data": "01 02 03"}],
+    ),
+    (
+        "K22-noneC2-empty",
+        "REG_NONE empty: bare hex(0): shape, agreement, round-trip",
+        [{"name": "E", "type": "REG_NONE", "data": ""}],
+    ),
 ]
 
 
@@ -200,6 +309,7 @@ def main(argv):
                 raise RuntimeError("seeded key missing before export: %s" % key)
             edit_path = os.path.join(work_root, pid + ".regedit.reg")
             exe_path = os.path.join(work_root, pid + ".regexe.reg")
+            time.sleep(REGEDIT_SETTLE_SECONDS)
             try:
                 run(
                     [
@@ -213,8 +323,6 @@ def main(argv):
             except RuntimeError:
                 # regedit.exe launches can flake under rapid respawn;
                 # one bounded retry before giving up.
-                import time
-
                 time.sleep(3)
                 run(
                     [
