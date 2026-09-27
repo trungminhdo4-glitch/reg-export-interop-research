@@ -135,6 +135,46 @@ def test_unknown_hex_inventoried():
     assert value["known_type"] is False
 
 
+def test_unknown_hex_0_inventoried():
+    # R6-C consumer shape only: the inspector must inventory a hex(0)
+    # (REG_NONE) payload without claiming its producer semantics.
+    # Producer behavior comes from the Windows matrix run, not this test.
+    doc = inspect(blob('%s\r\n\r\n[K]\r\n"N"=hex(0):01,02,03\r\n' % HEADER))
+    value = doc["sections"][0]["values"][0]
+    assert value["kind"] == "UNKNOWN_HEX_0"
+    assert value["known_type"] is False
+    assert value["bytes_hex"] == "010203"
+
+
+def test_bare_hex_0_empty_payload_shape():
+    # R6-C2 consumer shape only: bare 'hex(0):' with no payload bytes.
+    doc = inspect(blob('%s\r\n\r\n[K]\r\n"E"=hex(0):\r\n' % HEADER))
+    value = doc["sections"][0]["values"][0]
+    assert value["kind"] == "UNKNOWN_HEX_0"
+    assert value["bytes_hex"] == ""
+
+
+def test_long_name_continuation_joins():
+    # R6-A consumer shape only: a 100-char value name with a wrapped
+    # payload must join to one logical line; width claims need the matrix.
+    name = "N" * 100
+    text = '%s\r\n\r\n[K]\r\n"%s"=hex:01,02,\\\r\n  03,04\r\n' % (HEADER, name)
+    doc = inspect(blob(text))
+    value = doc["sections"][0]["values"][0]
+    assert value["name"] == name
+    assert value["bytes_hex"] == "01020304"
+
+
+def test_section_order_preserved_as_emitted():
+    # The inspector model preserves emission order verbatim (mixed-case
+    # section names included); ordering verdicts therefore describe the
+    # emitter, and this test pins the preservation, not any rule.
+    text = '%s\r\n\r\n[b1]\r\n@="t"\r\n[B2]\r\n@="t"\r\n' % HEADER
+    doc = inspect(blob(text))
+    keys = [s["key"] for s in doc["sections"]]
+    assert keys == ["b1", "B2"]
+
+
 def test_bad_escape_rejected():
     with pytest.raises(Malformed):
         inspect(blob('%s\r\n\r\n[K]\r\n"S"="a\\qb"\r\n' % HEADER))

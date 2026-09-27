@@ -49,6 +49,17 @@ foreach ($probe in $spec.probes) {
         $bytes = [byte[]]($value.data -split " " | ForEach-Object { [Convert]::ToByte($_, 16) })
         New-ItemProperty -Path $psKey -Name $name -Value $bytes -PropertyType Binary -Force | Out-Null
       }
+      "REG_NONE" {
+        # REG_NONE (hex(0)) has no PowerShell PropertyType; .NET SetValue with
+        # RegistryValueKind.None stores it exactly (proven in scratch feasibility).
+        if ([string]::IsNullOrEmpty($value.data)) {
+          $bytes = [byte[]]@()
+        } else {
+          $bytes = [byte[]]($value.data -split " " | ForEach-Object { [Convert]::ToByte($_, 16) })
+        }
+        $hivePath = "HKEY_CURRENT_USER" + $key.Substring(4)
+        [Microsoft.Win32.Registry]::SetValue($hivePath, $name, $bytes, [Microsoft.Win32.RegistryValueKind]::None)
+      }
       "REG_MULTI_SZ" {
         $strings = [string[]]$value.data
         New-ItemProperty -Path $psKey -Name $name -Value $strings -PropertyType MultiString -Force | Out-Null

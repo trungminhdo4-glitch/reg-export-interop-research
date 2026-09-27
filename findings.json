@@ -12,18 +12,18 @@
         "lines": 129
       },
       {
-        "exists_for": "Confined exact-type corpus seeder (own HKCU scratch keys only).",
+        "exists_for": "Confined exact-type corpus seeder (own HKCU scratch keys only); incl. REG_NONE via .NET exact kind.",
         "file": "scripts/reg_seed.ps1",
-        "lines": 66
+        "lines": 77
       },
       {
-        "exists_for": "Reproducible 14-probe runner: seed, dual-emitter export, parse, byte-compare, import round-trip, sanitized evidence.",
+        "exists_for": "Reproducible 23-probe runner: seed, dual-emitter export, parse, byte-compare, import round-trip, sanitized evidence.",
         "file": "scripts/reg_matrix.py",
-        "lines": 317
+        "lines": 425
       }
     ],
     "name": "reg-export-matrix",
-    "tests": "tests/test_reg_study.py (20 tests, stdlib+pytest only)"
+    "tests": "tests/test_reg_study.py (24 tests, stdlib+pytest only)"
   },
   "claims": [
     {
@@ -31,47 +31,68 @@
       "id": "R1",
       "scope": "regedit.exe /e + reg.exe export, Windows 10 Home build 26200",
       "status": "OBSERVED",
-      "text": "Both emitters produce byte-identical output on all 14 probes."
+      "text": "Both emitters produce byte-identical output on all 23 probes."
     },
     {
       "confidence": "high",
       "id": "R2",
       "scope": "same",
       "status": "OBSERVED",
-      "text": "Hex payload lines wrap at 77 content columns (backslash continuation, 2-space indent, trailing comma kept)."
+      "text": "Hex payload lines: first line carries max(1, ceil((77-P)/3)) bytes where P is the rendered prefix width (quoted name + '=hex:'), continuations carry 25 bytes (backslash continuation, 2-space indent, trailing comma kept). The earlier floor((77-P)/3) formula coincided at the old probe points (77-P divisible by 3 there) and is superseded."
     },
     {
       "confidence": "high",
       "id": "R3",
-      "scope": "same",
+      "scope": "same; ordering evidence ASCII names only",
       "status": "OBSERVED",
-      "text": "Subkey sections export alphabetically; values export in registry enumeration (creation) order."
+      "text": "Subkey sections export in ASCII case-folded stable order; values export in registry enumeration (creation) order, including mixed-case ASCII value names."
     },
     {
       "confidence": "high",
       "id": "R4",
       "scope": "same",
       "status": "OBSERVED",
-      "text": "Delete-import-reexport round-trips are byte-identical on all 14 probes, including MULTI_SZ empty elements."
+      "text": "Delete-import-reexport round-trips are byte-identical on all 23 probes, including MULTI_SZ empty elements and REG_NONE (hex(0)) 3-byte and empty payloads."
     },
     {
       "confidence": "high",
       "id": "R5",
       "scope": "same",
       "status": "OBSERVED",
-      "text": "dword is 8 lowercase zero-padded hex; QWORD is hex(b) little-endian; EXPAND_SZ stored unexpanded with NUL terminator."
+      "text": "dword is 8 lowercase zero-padded hex; QWORD is hex(b) little-endian; EXPAND_SZ stored unexpanded with NUL terminator; REG_NONE is emitted as hex(0) (bare colon when empty)."
     },
     {
-      "confidence": "none",
+      "confidence": "high",
+      "id": "R6a",
+      "scope": "same; probes K14-K18 (prefix widths 27..107, one 30-byte payload)",
+      "status": "OBSERVED",
+      "text": "Axis A resolved: long-name prefixes shift the first wrap per the ceil+min-one rule (K14 17 bytes at P=27 refutes floor; K15-K18 carry 1 first-line byte at P=76..107); continuations hold 25; both emitters agree byte-for-byte; round-trips clean."
+    },
+    {
+      "confidence": "high",
+      "id": "R6b",
+      "scope": "same; ASCII mixed-case probes K19-K20",
+      "status": "OBSERVED",
+      "text": "Axis B resolved for ASCII: subkeys [b1,A1,B2,a2] export as [A1,a2,b1,B2] (case-folded stable, not ordinal); values [zeta,Alpha,MID,beta] keep creation order. Tie-break pairs (Ab vs aB) are UNPRODUCIBLE: the namespace folds case at identity (scratch-proven: one key survives)."
+    },
+    {
+      "confidence": "high",
+      "id": "R6c",
+      "scope": "same; probes K21-K22",
+      "status": "OBSERVED",
+      "text": "Axis C resolved for REG_NONE: producible via .NET exact-type seeding; both emitters emit hex(0) (3-byte payload and bare empty); import round-trip preserves discriminant and bytes. Other exotic discriminants (4,5,6,8,9,10) are UNPRODUCIBLE_WITH_CURRENT_ORACLE (no exact-type API; native APIs out of scope)."
+    },
+    {
+      "confidence": "high",
       "id": "R6",
-      "scope": "open",
-      "status": "UNKNOWN",
-      "text": "Behavior for >77-column prefixes, mixed-case subkey sort, and exotic hex discriminants."
+      "scope": "same; residual unknowns: non-ASCII ordering, tie-break (unproducible by construction), non-REG_NONE exotic discriminants (unproducible with oracle)",
+      "status": "OBSERVED",
+      "text": "R6 closed: all three axes exercised with dual-emitter + round-trip evidence (R6a/R6b/R6c). No locale/Unicode ordering claimed; no universal-Windows claim."
     }
   ],
   "determinism": {
     "class": "RECONSTRUCTION_DETERMINISTIC",
-    "note": "delete + import own export + re-export is byte-identical (14/14); no wall-clock or machine bytes in v5 text exports."
+    "note": "delete + import own export + re-export is byte-identical (23/23); no wall-clock or machine bytes in v5 text exports."
   },
   "environment": {
     "generators": [
@@ -86,6 +107,6 @@
     "scan": "synthetic key/value names only; no user paths, SIDs, or machine data in matrix.json",
     "scratch_keys": "HKCU\\SOFTWARE\\REStudyTmp* (removed after runs)"
   },
-  "probes": 14,
+  "probes": 23,
   "study": "reg-export-matrix"
 }

@@ -338,6 +338,243 @@
           ]
         }
       ]
+    },
+    {
+      "byte_identical": true,
+      "changed_input": "20-char name interpolates floor model (P=27 -> 16 first-line bytes)",
+      "emitter_semantic_delta": [],
+      "probe": "K14-wrapA0-name20",
+      "regedit_sha256": "e2657bd274766cb6e475a28d09ca57d13c2ac6d428630473f10172f298797c8a",
+      "regexe_sha256": "e2657bd274766cb6e475a28d09ca57d13c2ac6d428630473f10172f298797c8a",
+      "roundtrip_byte_identical": true,
+      "roundtrip_clean": true,
+      "sections": [
+        {
+          "key": "K14-wrapA0-name20",
+          "values": [
+            {
+              "kind": "REG_BINARY",
+              "name": "NNNNNNNNNNNNNNNNNNNN"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "byte_identical": true,
+      "changed_input": "69-char name just below 77-col prefix boundary (P=76 -> 0 bytes)",
+      "emitter_semantic_delta": [],
+      "probe": "K15-wrapA1-p69",
+      "regedit_sha256": "39667bb2b139bbc860c7232f7544d1a2f7def7d75710c911071d103dbddf3e8f",
+      "regexe_sha256": "39667bb2b139bbc860c7232f7544d1a2f7def7d75710c911071d103dbddf3e8f",
+      "roundtrip_byte_identical": true,
+      "roundtrip_clean": true,
+      "sections": [
+        {
+          "key": "K15-wrapA1-p69",
+          "values": [
+            {
+              "kind": "REG_BINARY",
+              "name": "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "byte_identical": true,
+      "changed_input": "70-char name at exact 77-col prefix boundary (P=77 -> 0 bytes)",
+      "emitter_semantic_delta": [],
+      "probe": "K16-wrapA2-p70",
+      "regedit_sha256": "83ca7901a969320128b35fb8b55aa6d35e69980b1009174a60fbe978b9dba02f",
+      "regexe_sha256": "83ca7901a969320128b35fb8b55aa6d35e69980b1009174a60fbe978b9dba02f",
+      "roundtrip_byte_identical": true,
+      "roundtrip_clean": true,
+      "sections": [
+        {
+          "key": "K16-wrapA2-p70",
+          "values": [
+            {
+              "kind": "REG_BINARY",
+              "name": "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "byte_identical": true,
+      "changed_input": "71-char name just above boundary (P=78: floor model undefined)",
+      "emitter_semantic_delta": [],
+      "probe": "K17-wrapA3-p71",
+      "regedit_sha256": "f28106532188576a4f3024ccf84b20e72bdfc730508c93329452cee3245e4984",
+      "regexe_sha256": "f28106532188576a4f3024ccf84b20e72bdfc730508c93329452cee3245e4984",
+      "roundtrip_byte_identical": true,
+      "roundtrip_clean": true,
+      "sections": [
+        {
+          "key": "K17-wrapA3-p71",
+          "values": [
+            {
+              "kind": "REG_BINARY",
+              "name": "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "byte_identical": true,
+      "changed_input": "100-char name long-prefix regime (P=107)",
+      "emitter_semantic_delta": [],
+      "probe": "K18-wrapA4-p100",
+      "regedit_sha256": "eb93f7b3292e2ea4fcc70c7d7eaa16d6f923502ea6497e97515727143a085149",
+      "regexe_sha256": "eb93f7b3292e2ea4fcc70c7d7eaa16d6f923502ea6497e97515727143a085149",
+      "roundtrip_byte_identical": true,
+      "roundtrip_clean": true,
+      "sections": [
+        {
+          "key": "K18-wrapA4-p100",
+          "values": [
+            {
+              "kind": "REG_BINARY",
+              "name": "NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "byte_identical": true,
+      "changed_input": "subkeys b1,A1,B2,a2 created scrambled: ordinal vs folded order",
+      "emitter_semantic_delta": [],
+      "probe": "K19-orderB1-fold",
+      "regedit_sha256": "84da5020fd05c2e7b2589ad66e54d11f5b57ca9c20f51003b0d4adf1d156531f",
+      "regexe_sha256": "84da5020fd05c2e7b2589ad66e54d11f5b57ca9c20f51003b0d4adf1d156531f",
+      "roundtrip_byte_identical": true,
+      "roundtrip_clean": true,
+      "sections": [
+        {
+          "key": "K19-orderB1-fold",
+          "values": [
+            {
+              "kind": "REG_SZ",
+              "name": "v"
+            }
+          ]
+        },
+        {
+          "key": "A1",
+          "values": [
+            {
+              "kind": "REG_SZ",
+              "name": "v"
+            }
+          ]
+        },
+        {
+          "key": "a2",
+          "values": [
+            {
+              "kind": "REG_SZ",
+              "name": "v"
+            }
+          ]
+        },
+        {
+          "key": "b1",
+          "values": [
+            {
+              "kind": "REG_SZ",
+              "name": "v"
+            }
+          ]
+        },
+        {
+          "key": "B2",
+          "values": [
+            {
+              "kind": "REG_SZ",
+              "name": "v"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "byte_identical": true,
+      "changed_input": "values zeta,Alpha,MID,beta: creation order vs sorted (K11 scope)",
+      "emitter_semantic_delta": [],
+      "probe": "K20-orderB2-values",
+      "regedit_sha256": "c2d616512b4525b0ee63c28e61c5abdc2c8c775e3764d2dae0a598c8e01affaa",
+      "regexe_sha256": "c2d616512b4525b0ee63c28e61c5abdc2c8c775e3764d2dae0a598c8e01affaa",
+      "roundtrip_byte_identical": true,
+      "roundtrip_clean": true,
+      "sections": [
+        {
+          "key": "K20-orderB2-values",
+          "values": [
+            {
+              "kind": "REG_SZ",
+              "name": "zeta"
+            },
+            {
+              "kind": "REG_SZ",
+              "name": "Alpha"
+            },
+            {
+              "kind": "REG_SZ",
+              "name": "MID"
+            },
+            {
+              "kind": "REG_SZ",
+              "name": "beta"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "byte_identical": true,
+      "changed_input": "REG_NONE 3 bytes: hex(0) discriminant, agreement, round-trip",
+      "emitter_semantic_delta": [],
+      "probe": "K21-noneC1",
+      "regedit_sha256": "9b55ffc3f0e219d8a2af8b6ed898a58023e012bdd2f29b833e67349421562231",
+      "regexe_sha256": "9b55ffc3f0e219d8a2af8b6ed898a58023e012bdd2f29b833e67349421562231",
+      "roundtrip_byte_identical": true,
+      "roundtrip_clean": true,
+      "sections": [
+        {
+          "key": "K21-noneC1",
+          "values": [
+            {
+              "kind": "UNKNOWN_HEX_0",
+              "name": "N"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "byte_identical": true,
+      "changed_input": "REG_NONE empty: bare hex(0): shape, agreement, round-trip",
+      "emitter_semantic_delta": [],
+      "probe": "K22-noneC2-empty",
+      "regedit_sha256": "8ea32ed76de52645d00aed0e628900d5380b6fbeabe9512227f2024fca6e9b32",
+      "regexe_sha256": "8ea32ed76de52645d00aed0e628900d5380b6fbeabe9512227f2024fca6e9b32",
+      "roundtrip_byte_identical": true,
+      "roundtrip_clean": true,
+      "sections": [
+        {
+          "key": "K22-noneC2-empty",
+          "values": [
+            {
+              "kind": "UNKNOWN_HEX_0",
+              "name": "E"
+            }
+          ]
+        }
+      ]
     }
   ],
   "spec": "Registry Editor Version 5.00 exports",
